@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+:root {
+    --color-bg-dark: oklch(20% 0.04 240);
+    --color-text-light: oklch(85% 0.03 240);
+    --color-cursor: oklch(75% 0.15 190);
+    --color-bg-highlight: oklch(28% 0.06 240);
+    --color-border: oklch(45% 0.08 200 / 0.5);
+}
+
+html {
+    background-color: var(--color-bg-dark);
+    color: var(--color-text-light);
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100lvh;
+}
+
+.colored-border {
+    border-color: var(--color-border);
+}
+
+.typewriter {
+    /* Core effect */
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid var(--color-cursor);
+
+    /* Animation setup */
+    width: 21ch; /* MUST match character count */
+    animation:
+        typing 3s steps(21) forwards,
+        blink 1s step-end infinite,
+        boldify 3.1s forwards;
+}
+
+/* Typewriter typing */
+@keyframes typing {
+    from {
+        width: 0;
+    }
+    to {
+        width: 21ch;
+    }
+}
+
+/* Cursor blink */
+@keyframes blink {
+    50% {
+        border-color: transparent;
+    }
+}
+
+/* Make text bold at end */
+@keyframes boldify {
+    0%,
+    99% {
+        font-weight: normal;
+        background-color: transparent;
+    }
+    100% {
+        font-weight: bold;
+        background-color: var(--color-bg-highlight);
+    }
+}
