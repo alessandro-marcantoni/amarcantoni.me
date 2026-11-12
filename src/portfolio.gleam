@@ -1,8 +1,9 @@
 import lustre
 import lustre/element
-import lustre/element/html
 import model.{type Model, type Msg, Blog, GoToPage, Home, Model, Projects}
+import pages/blog
 import pages/home
+import pages/projects
 
 pub fn main() -> Nil {
   let app = lustre.simple(init, update, view)
@@ -23,7 +24,7 @@ fn update(model: Model, msg: Msg) -> Model {
 fn view(model: Model) -> element.Element(Msg) {
   case model.current_page {
     Home -> home.render_home(model)
-    Projects -> html.div([], [html.text("Projects Page")])
-    Blog -> html.div([], [html.text("Blog Page")])
+    Projects -> projects.render_projects(model)
+    Blog -> blog.render_blog(model)
   }
 }
