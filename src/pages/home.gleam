@@ -51,13 +51,26 @@ fn render_hero(profile: model.Profile) -> element.Element(model.Msg) {
         html.p([attribute.class("pt-1 text-sm text-muted")], [
           html.text("based in " <> profile.location),
         ]),
+        html.a(
+          [
+            attribute.href("/alessandro-marcantoni-cv.pdf"),
+            attribute.download(""),
+            attribute.class(
+              "mt-6 inline-flex items-center gap-2 rounded-md border border-accent/60 px-4 py-2 text-sm text-accent hover:bg-accent hover:text-bg transition-colors",
+            ),
+          ],
+          [
+            html.span([attribute.aria_hidden(True)], [html.text("↓")]),
+            html.text("Download CV"),
+          ],
+        ),
       ]),
       html.div([attribute.class("flex justify-center md:justify-end")], [
         html.img([
           attribute.class(
             "size-36 md:size-48 rounded-full object-cover ring-2 ring-accent/50 ring-offset-4 ring-offset-bg shadow-[0_0_80px_-12px] shadow-accent/50",
           ),
-          attribute.src("imgs/profile.jpg"),
+          attribute.src("/imgs/profile.webp"),
           attribute.alt("Portrait of " <> profile.first_name),
         ]),
       ]),
@@ -113,14 +126,7 @@ fn render_contact_info(
                   ],
                   [
                     html.text(info.label),
-                    html.span(
-                      [
-                        attribute.class(
-                          "group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform",
-                        ),
-                      ],
-                      [html.text("↗")],
-                    ),
+                    ui.external_arrow(),
                   ],
                 ),
                 html.span(
@@ -274,14 +280,7 @@ fn render_extras(
                       ],
                       [
                         html.text(cert.issuer),
-                        html.span(
-                          [
-                            attribute.class(
-                              "group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform",
-                            ),
-                          ],
-                          [html.text("↗")],
-                        ),
+                        ui.external_arrow(),
                       ],
                     ),
                     html.span(

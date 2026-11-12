@@ -12,6 +12,23 @@ pub type Page {
   Blog
 }
 
+pub fn page_path(page: Page) -> String {
+  case page {
+    Home -> "/"
+    Projects -> "/projects"
+    Blog -> "/blog"
+  }
+}
+
+/// Unknown paths fall back to the home page instead of a 404.
+pub fn page_from_path(path: String) -> Page {
+  case path {
+    "/projects" | "/projects/" -> Projects
+    "/blog" | "/blog/" -> Blog
+    _ -> Home
+  }
+}
+
 pub type Profile {
   Profile(
     first_name: String,
@@ -53,6 +70,8 @@ pub type Project {
   Project(
     name: String,
     tagline: String,
+    /// Empty when the project has no public page.
+    url: String,
     highlights: List(String),
     skills: List(String),
   )
@@ -124,8 +143,14 @@ pub const experience = [
     company: "TeamSystem",
     location: "",
     period: "June 2026 - Present",
-    highlights: [],
-    skills: [],
+    highlights: [
+      "Designing and building event-driven and REST microservices in Java, Quarkus, and PostgreSQL, modeled with Domain-Driven Design.",
+      "Integrating services through Kafka, Dapr, and Azure Service Bus, and deploying them on Kubernetes.",
+    ],
+    skills: [
+      "Java", "Quarkus", "PostgreSQL", "DDD", "Kafka", "Dapr",
+      "Azure Service Bus", "Kubernetes",
+    ],
   ),
   Experience(
     role: "Cloud Engineer & IT Consultant",
@@ -148,7 +173,7 @@ pub const experience = [
   Experience(
     role: "Full-Stack Software Engineer",
     company: "Sanascreen",
-    location: "St. Gallen, Switzerland",
+    location: "St. Gallen, Switzerland · Freelance",
     period: "March 2023 - December 2025",
     highlights: [
       "Co-designed a scalable, cost-effective SaaS architecture, replacing the MVP with a robust production platform.",
@@ -185,6 +210,7 @@ pub const projects = [
   Project(
     name: "Game, Set, Plan",
     tagline: "SaaS for tennis academies",
+    url: "https://igor20.com",
     highlights: [
       "Built a full-stack SaaS to automate training schedules for tennis academies, handling multiple coaches, players, and courts.",
       "Implemented a scheduling algorithm that cut schedule creation time by 70% and delivered a UI refined with coaches and staff.",
@@ -194,6 +220,7 @@ pub const projects = [
   Project(
     name: "Juky",
     tagline: "Modern digital jukebox",
+    url: "",
     highlights: [
       "Built a mobile/web app where users can either create \"jukes\" or join existing ones to suggest songs played in a vote-based queue.",
       "Integrated Spotify APIs for music search/playback; used WebSockets for real-time collaboration.",

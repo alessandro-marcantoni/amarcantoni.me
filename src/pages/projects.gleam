@@ -31,7 +31,33 @@ fn render_project(
       ),
       html.div([attribute.class("flex-1")], [
         html.h2([attribute.class("text-2xl md:text-3xl font-bold")], [
-          html.text(project.name),
+          case project.url {
+            "" -> html.text(project.name)
+            url ->
+              html.a(
+                [
+                  attribute.href(url),
+                  attribute.target("_blank"),
+                  attribute.rel("noopener"),
+                  attribute.class("group hover:text-accent transition-colors"),
+                ],
+                [
+                  html.text(project.name),
+                  html.span(
+                    [
+                      attribute.class(
+                        "inline-block pl-2 text-lg text-muted group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform",
+                      ),
+                      attribute.aria_hidden(True),
+                    ],
+                    [html.text("↗")],
+                  ),
+                  html.span([attribute.class("sr-only")], [
+                    html.text(" (opens in a new tab)"),
+                  ]),
+                ],
+              )
+          },
         ]),
         html.p([attribute.class("pt-1 pb-5 text-accent")], [
           html.text(project.tagline),

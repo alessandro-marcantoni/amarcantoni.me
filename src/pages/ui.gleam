@@ -5,11 +5,12 @@ import gleam/string
 import lustre/attribute
 import lustre/element
 import lustre/element/html
-import lustre/event
 import model
 
+/// Pages listed in the navbar. Blog stays reachable at /blog but is left out
+/// until it has a post.
 pub fn get_pages() -> List(model.Page) {
-  [model.Home, model.Projects, model.Blog]
+  [model.Home, model.Projects]
 }
 
 pub fn get_title(page: model.Page) -> String {
@@ -34,8 +35,7 @@ pub fn layout(
           html.div([attribute.class("flex items-center justify-between px-3")], [
             html.a(
               [
-                attribute.href("#"),
-                event.on_click(model.GoToPage(model.Home)),
+                attribute.href(model.page_path(model.Home)),
                 attribute.class(
                   "py-4 px-3 text-sm font-bold tracking-tight hover:text-accent transition-colors",
                 ),
@@ -114,11 +114,15 @@ pub fn render_navbar(current_page: model.Page) -> element.Element(model.Msg) {
     [attribute.class("flex")],
     get_pages()
       |> list.map(fn(page) {
+        let is_current = current_page == page
         html.a(
           [
-            attribute.href("#"),
-            event.on_click(model.GoToPage(page)),
-            attribute.class(case current_page == page {
+            attribute.href(model.page_path(page)),
+            case is_current {
+              True -> attribute.aria_current("page")
+              False -> attribute.none()
+            },
+            attribute.class(case is_current {
               True ->
                 "px-3 py-4 text-sm text-accent font-bold border-b-2 border-accent"
               False ->
@@ -220,4 +224,21 @@ pub fn skill_tags(skills: List(String)) -> element.Element(model.Msg) {
         )
       }),
   )
+}
+
+/// The ↗ marker for links that open in a new tab, with the same warning in
+/// text for screen readers.
+pub fn external_arrow() -> element.Element(model.Msg) {
+  element.fragment([
+    html.span(
+      [
+        attribute.class(
+          "group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform",
+        ),
+        attribute.aria_hidden(True),
+      ],
+      [html.text("↗")],
+    ),
+    html.span([attribute.class("sr-only")], [html.text("(opens in a new tab)")]),
+  ])
 }
