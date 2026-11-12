@@ -247,7 +247,6 @@ pub const education = [
 pub const languages = [
   Language("Italian", "Native"),
   Language("English", "C1"),
-  Language("Spanish", "Limited working"),
 ]
 
 pub const certifications = [
