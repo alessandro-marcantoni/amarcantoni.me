@@ -16,14 +16,22 @@ pub type Profile {
   Profile(
     first_name: String,
     last_name: String,
+    role: String,
     location: String,
+    stats: List(Stat),
     about: List(String),
     contact_info: List(ContactInfo),
     experience: List(Experience),
     projects: List(Project),
     education: List(Education),
     languages: List(Language),
+    certifications: List(Certification),
+    volunteering: List(Experience),
   )
+}
+
+pub type Stat {
+  Stat(value: String, label: String)
 }
 
 pub type ContactInfo {
@@ -51,7 +59,11 @@ pub type Project {
 }
 
 pub type Education {
-  Education(school: String, degree: String, grade: String)
+  Education(school: String, degree: String, period: String, grade: String)
+}
+
+pub type Certification {
+  Certification(name: String, issuer: String, period: String, url: String)
 }
 
 pub type Language {
@@ -62,14 +74,25 @@ pub const profile =
   Profile(
     first_name: "Alessandro",
     last_name: "Marcantoni",
+    role: "Cloud & Software Engineer",
     location: "Rimini, Italy",
+    stats: stats,
     about: about_lines,
     contact_info: contact_info,
     experience: experience,
     projects: projects,
     education: education,
     languages: languages,
+    certifications: certifications,
+    volunteering: volunteering,
   )
+
+pub const stats = [
+  Stat("3 yrs", "building on AWS"),
+  Stat("175k", "users on the IoT platform"),
+  Stat("200k", "connected devices"),
+  Stat("-96%", "monthly cost on one service"),
+]
 
 pub const about_lines = [
   "Hi, there! I’m a software and cloud engineer who enjoys turning complex ideas into reliable, real-world products. I’ve worked across the stack—backend, frontend, cloud, and data—building scalable SaaS and IoT systems used in production.",
@@ -97,19 +120,29 @@ pub const contact_info = [
 
 pub const experience = [
   Experience(
-    role: "Cloud Engineer",
+    role: "Software Engineer",
+    company: "TeamSystem",
+    location: "",
+    period: "June 2026 - Present",
+    highlights: [],
+    skills: [],
+  ),
+  Experience(
+    role: "Cloud Engineer & IT Consultant",
     company: "Connect Reply",
-    location: "Milan, Italy",
-    period: "April 2023 - Present",
+    location: "Milan, Italy · Hybrid",
+    period: "April 2023 - May 2026",
     highlights: [
       "Took ownership of end-to-end features in a global IoT platform serving 175,000 users and 200,000 devices, leading technical design, implementation, and rollout of cloud-first IoT solutions with cross-functional teams.",
       "Designed and implemented a cloud solution for a marketing campaign service using AWS Lambda, EventBridge, DynamoDB, SQS, and related services, achieving a 96% reduction in monthly costs.",
       "Upgraded and refactored backend platform components and optimized cloud infrastructure, improving performance, security, maintainability, and reducing compute costs by 40%.",
+      "Developed backend applications and REST APIs using Java, Kotlin, and Spring Boot.",
       "Designed the architecture for an LLM-driven data navigator that discovers data in a data lake and exposes it via a natural-language chat interface, including data lake layout, ingestion strategy, and query strategy across heterogeneous datasets.",
     ],
     skills: [
-      "AWS", "Java", "Spring Boot", "Maven", "Python", "GoLang", "Terraform",
-      "MySQL", "Docker", "Kubernetes", "CI/CD", "LLMs",
+      "AWS", "Java", "Kotlin", "Spring Boot", "Maven", "Python", "GoLang",
+      "Terraform", "MySQL", "PostgreSQL", "Docker", "Kubernetes", "CI/CD",
+      "LLMs",
     ],
   ),
   Experience(
@@ -133,6 +166,18 @@ pub const experience = [
       "Designed a visual programming paradigm and implemented an IDE for modeling organizations in Multi-Agent Systems, enabling no-code definition and one-click enforcement.",
     ],
     skills: ["TypeScript", "React", "Kotlin", "Vert.x", "MongoDB", "Docker"],
+  ),
+  Experience(
+    role: "Student Intern",
+    company: "University of Bologna",
+    location: "Cesena, Italy · Part-time",
+    period: "April 2020 - September 2020",
+    highlights: [
+      "Studied deep learning technologies and face mask detection systems to build a face mask detector that runs on embedded systems.",
+      "Tested and compared different approaches quantitatively, then picked the best performing and lightest one.",
+      "Deployed the chosen solution on Raspberry Pi and Nvidia Jetson Nano.",
+    ],
+    skills: ["Python", "TensorFlow", "Deep Learning", "Embedded Systems"],
   ),
 ]
 
@@ -161,11 +206,13 @@ pub const education = [
   Education(
     school: "University of Bologna, Italy",
     degree: "MSc in Computer Science and Engineering",
+    period: "2020 - 2023",
     grade: "110/110 cum Laude",
   ),
   Education(
     school: "University of Bologna, Italy",
     degree: "BSc in Computer Science and Engineering",
+    period: "2017 - 2020",
     grade: "109/110",
   ),
 ]
@@ -173,4 +220,27 @@ pub const education = [
 pub const languages = [
   Language("Italian", "Native"),
   Language("English", "C1"),
+  Language("Spanish", "Limited working"),
+]
+
+pub const certifications = [
+  Certification(
+    name: "AWS Certified Cloud Practitioner",
+    issuer: "Amazon Web Services",
+    period: "Issued Jan 2025 · Expires Jan 2028",
+    url: "https://www.credly.com/badges/92648093-eb7b-49ec-8638-996f59063b40",
+  ),
+]
+
+pub const volunteering = [
+  Experience(
+    role: "Tennis Coach",
+    company: "Tennis Club Riccione",
+    location: "Riccione, Italy",
+    period: "June 2017 - September 2021",
+    highlights: [
+      "Taught tennis for four consecutive summers to children from my local community, improving my communication and organization skills.",
+    ],
+    skills: [],
+  ),
 ]

@@ -27,4 +27,9 @@ tailwindcss = "./.lustre/bin/tailwindcss-macos-arm64/tailwindcss-macos-arm64"
 
 [tools.lustre.html]
 title = "Alessandro Marcantoni - Portfolio"
-links = [{ rel = "icon", href = "imgs/profile.jpg"}]
+links = [
+  { rel = "icon", href = "imgs/profile.jpg" },
+  { rel = "preconnect", href = "https://fonts.googleapis.com" },
+  { rel = "preconnect", href = "https://fonts.gstatic.com", crossorigin = "" },
+  { rel = "stylesheet", href = "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" },
+]

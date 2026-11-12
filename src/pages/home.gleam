@@ -8,169 +8,331 @@ import pages/ui
 pub fn render_home(model: model.Model) -> element.Element(model.Msg) {
   let profile = model.profile
   ui.layout(model.current_page, [
-    html.div([], [
+    render_hero(profile),
+    render_stats(profile.stats),
+    ui.section("about", [
       html.div(
-        [
-          attribute.class(
-            "md:flex md:justify-between items-center border-b-1 colored-border",
-          ),
-        ],
-        [
-          html.div([attribute.class("py-6 pl-3")], [
-            render_full_name(profile),
-          ]),
-          html.div(
-            [
-              attribute.class(
-                "md:border-l-1 colored-border py-6 px-6 flex justify-center md:justify-end",
-              ),
-            ],
-            [
-              html.img([
-                attribute.class("h-50 w-50 rounded-full"),
-                attribute.src("imgs/profile.jpg"),
-                attribute.alt("Avatar"),
-              ]),
-            ],
-          ),
-        ],
-      ),
-      html.section([attribute.class("p-3")], [
-        ui.tagged("about", [
-          html.div(
-            [attribute.class("space-y-3")],
-            profile.about
-              |> list.map(fn(line) {
-                html.p([attribute.class("font-mono text-lg")], [
-                  html.text(line),
-                ])
-              }),
-          ),
-        ]),
-      ]),
-    ]),
-    render_contact_info(profile),
-    render_experience(profile.experience),
-    render_education(profile.education),
-    render_languages(profile.languages),
-  ])
-}
-
-fn render_full_name(profile: model.Profile) -> element.Element(model.Msg) {
-  html.div([], [
-    ui.tagged("name", [
-      html.h1(
-        [
-          attribute.class("font-mono text-2xl md:text-4xl typewriter"),
-        ],
-        [
-          html.span([], [
-            html.text(profile.first_name <> " " <> profile.last_name),
-          ]),
-        ],
-      ),
-    ]),
-    html.p([attribute.class("font-mono pt-3 opacity-75")], [
-      html.text(profile.location),
-    ]),
-  ])
-}
-
-fn render_contact_info(profile: model.Profile) -> element.Element(model.Msg) {
-  html.section([attribute.class("p-3")], [
-    ui.tagged("contact", [
-      html.ul(
-        [attribute.class("space-y-2")],
-        profile.contact_info
-          |> list.map(fn(info) {
-            html.li([], [
-              html.span([attribute.class("flex gap-3")], [
-                html.p(
-                  [
-                    attribute.class("font-mono text-md"),
-                  ],
-                  [
-                    html.text(info.label <> ":"),
-                  ],
-                ),
-                html.a(
-                  [
-                    attribute.href(info.url),
-                    attribute.class("font-mono text-md underline"),
-                    attribute.target("_blank"),
-                  ],
-                  [
-                    html.text(info.display),
-                  ],
-                ),
-              ]),
+        [attribute.class("space-y-4 max-w-3xl")],
+        profile.about
+          |> list.map(fn(line) {
+            html.p([attribute.class("text-base md:text-lg leading-relaxed")], [
+              html.text(line),
             ])
           }),
       ),
     ]),
+    render_contact_info(profile.contact_info),
+    render_experience(profile.experience),
+    render_background(profile.education, profile.languages),
+    render_extras(profile.certifications, profile.volunteering),
+  ])
+}
+
+fn render_hero(profile: model.Profile) -> element.Element(model.Msg) {
+  html.div(
+    [
+      attribute.class(
+        "flex flex-col-reverse md:flex-row md:items-center md:justify-between gap-8 p-6 md:p-10",
+      ),
+    ],
+    [
+      ui.tagged("name", [
+        html.h1(
+          [
+            attribute.class(
+              "text-2xl sm:text-4xl md:text-5xl font-extrabold typewriter",
+            ),
+          ],
+          [html.text(profile.first_name <> " " <> profile.last_name)],
+        ),
+        html.p([attribute.class("pt-4 text-lg md:text-xl text-accent")], [
+          html.text(profile.role),
+        ]),
+        html.p([attribute.class("pt-1 text-sm text-muted")], [
+          html.text("based in " <> profile.location),
+        ]),
+      ]),
+      html.div([attribute.class("flex justify-center md:justify-end")], [
+        html.img([
+          attribute.class(
+            "size-36 md:size-48 rounded-full object-cover ring-2 ring-accent/50 ring-offset-4 ring-offset-bg shadow-[0_0_80px_-12px] shadow-accent/50",
+          ),
+          attribute.src("imgs/profile.jpg"),
+          attribute.alt("Portrait of " <> profile.first_name),
+        ]),
+      ]),
+    ],
+  )
+}
+
+fn render_stats(stats: List(model.Stat)) -> element.Element(model.Msg) {
+  // gap-px over a line-colored background draws the grid lines between cells.
+  html.dl(
+    [attribute.class("grid grid-cols-2 md:grid-cols-4 gap-px bg-line")],
+    stats
+      |> list.map(fn(stat) {
+        html.div([attribute.class("bg-bg px-6 py-5 md:px-10")], [
+          html.dt([attribute.class("sr-only")], [html.text(stat.label)]),
+          html.dd(
+            [attribute.class("text-2xl md:text-3xl font-bold text-accent")],
+            [
+              html.text(stat.value),
+            ],
+          ),
+          html.dd([attribute.class("pt-1 text-xs text-muted")], [
+            html.text(stat.label),
+          ]),
+        ])
+      }),
+  )
+}
+
+fn render_contact_info(
+  contact_info: List(model.ContactInfo),
+) -> element.Element(model.Msg) {
+  ui.section("contact", [
+    html.ul(
+      [attribute.class("grid sm:grid-cols-3 gap-3")],
+      contact_info
+        |> list.map(fn(info) {
+          html.li([], [
+            html.a(
+              [
+                attribute.href(info.url),
+                attribute.target("_blank"),
+                attribute.class(
+                  "group flex h-full flex-col gap-1 rounded-lg border border-line p-4 hover:border-accent/60 hover:bg-highlight/40 transition-colors",
+                ),
+              ],
+              [
+                html.span(
+                  [
+                    attribute.class(
+                      "flex justify-between text-xs uppercase tracking-wider text-muted",
+                    ),
+                  ],
+                  [
+                    html.text(info.label),
+                    html.span(
+                      [
+                        attribute.class(
+                          "group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform",
+                        ),
+                      ],
+                      [html.text("↗")],
+                    ),
+                  ],
+                ),
+                html.span(
+                  [
+                    attribute.class(
+                      "text-sm break-all group-hover:text-accent transition-colors",
+                    ),
+                  ],
+                  [html.text(info.display)],
+                ),
+              ],
+            ),
+          ])
+        }),
+    ),
   ])
 }
 
 fn render_experience(
   experience: List(model.Experience),
 ) -> element.Element(model.Msg) {
-  html.section([attribute.class("p-3")], [
-    ui.tagged("experience", [
-      html.div(
-        [attribute.class("space-y-8 py-3")],
-        experience
-          |> list.map(fn(job) {
-            html.article([attribute.class("space-y-2")], [
-              html.h3([attribute.class("font-mono text-lg font-bold")], [
-                html.text(job.role <> " @ " <> job.company),
+  ui.section("experience", [
+    html.ol(
+      [attribute.class("relative ml-1 border-l border-line space-y-12")],
+      experience
+        |> list.map(fn(job) {
+          html.li([attribute.class("relative pl-6 md:pl-8")], [
+            html.span(
+              [
+                attribute.class(
+                  "absolute -left-[5px] top-1.5 size-2.5 rounded-full bg-accent ring-4 ring-bg",
+                ),
+              ],
+              [],
+            ),
+            html.p(
+              [attribute.class("text-xs uppercase tracking-wider text-accent")],
+              [html.text(job.period)],
+            ),
+            html.h3([attribute.class("pt-2 text-lg md:text-xl font-bold")], [
+              html.text(job.role),
+              html.span([attribute.class("text-muted font-normal")], [
+                html.text(" @ "),
               ]),
-              html.p([attribute.class("font-mono text-sm opacity-50")], [
-                html.text(job.period <> " · " <> job.location),
+              html.span([attribute.class("text-accent")], [
+                html.text(job.company),
               ]),
-              ui.bullets(job.highlights),
-              ui.skill_tags(job.skills),
-            ])
-          }),
-      ),
-    ]),
+            ]),
+            case job.location {
+              "" -> element.none()
+              location ->
+                html.p([attribute.class("pt-1 pb-4 text-sm text-muted")], [
+                  html.text(location),
+                ])
+            },
+            ui.bullets(job.highlights),
+            ui.skill_tags(job.skills),
+          ])
+        }),
+    ),
   ])
 }
 
-fn render_education(
+fn render_background(
   education: List(model.Education),
-) -> element.Element(model.Msg) {
-  html.section([attribute.class("p-3")], [
-    ui.tagged("education", [
-      html.ul(
-        [attribute.class("space-y-3 py-3")],
-        education
-          |> list.map(fn(entry) {
-            html.li([attribute.class("font-mono")], [
-              html.p([attribute.class("font-bold")], [html.text(entry.degree)]),
-              html.p([attribute.class("text-sm opacity-50")], [
-                html.text(entry.school <> " · " <> entry.grade),
-              ]),
-            ])
-          }),
-      ),
-    ]),
-  ])
-}
-
-fn render_languages(
   languages: List(model.Language),
 ) -> element.Element(model.Msg) {
-  html.section([attribute.class("p-3")], [
-    ui.tagged("languages", [
-      html.ul(
-        [attribute.class("space-y-1 py-3")],
-        languages
-          |> list.map(fn(language) {
-            html.li([attribute.class("font-mono")], [
-              html.text(language.name <> ": " <> language.level),
-            ])
-          }),
+  html.div(
+    [
+      attribute.class(
+        "grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-line",
       ),
-    ]),
-  ])
+    ],
+    [
+      ui.section("education", [
+        html.ul(
+          [attribute.class("space-y-5")],
+          education
+            |> list.map(fn(entry) {
+              html.li([], [
+                html.p(
+                  [
+                    attribute.class(
+                      "pb-1 text-xs uppercase tracking-wider text-accent",
+                    ),
+                  ],
+                  [html.text(entry.period)],
+                ),
+                html.p([attribute.class("font-bold")], [
+                  html.text(entry.degree),
+                ]),
+                html.p([attribute.class("pt-1 text-sm text-muted")], [
+                  html.text(entry.school),
+                ]),
+                html.p([attribute.class("pt-1 text-sm text-accent")], [
+                  html.text(entry.grade),
+                ]),
+              ])
+            }),
+        ),
+      ]),
+      ui.section("languages", [
+        html.ul(
+          [attribute.class("space-y-3")],
+          languages
+            |> list.map(fn(language) {
+              html.li([attribute.class("flex justify-between max-w-xs")], [
+                html.span([], [html.text(language.name)]),
+                html.span([attribute.class("text-accent")], [
+                  html.text(language.level),
+                ]),
+              ])
+            }),
+        ),
+      ]),
+    ],
+  )
+}
+
+fn render_extras(
+  certifications: List(model.Certification),
+  volunteering: List(model.Experience),
+) -> element.Element(model.Msg) {
+  html.div(
+    [
+      attribute.class(
+        "grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-line",
+      ),
+    ],
+    [
+      ui.section("certifications", [
+        html.ul(
+          [attribute.class("space-y-3")],
+          certifications
+            |> list.map(fn(cert) {
+              html.li([], [
+                html.a(
+                  [
+                    attribute.href(cert.url),
+                    attribute.target("_blank"),
+                    attribute.class(
+                      "group block rounded-lg border border-line p-4 hover:border-accent/60 hover:bg-highlight/40 transition-colors",
+                    ),
+                  ],
+                  [
+                    html.span(
+                      [
+                        attribute.class(
+                          "flex justify-between text-xs uppercase tracking-wider text-muted",
+                        ),
+                      ],
+                      [
+                        html.text(cert.issuer),
+                        html.span(
+                          [
+                            attribute.class(
+                              "group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform",
+                            ),
+                          ],
+                          [html.text("↗")],
+                        ),
+                      ],
+                    ),
+                    html.span(
+                      [
+                        attribute.class(
+                          "block pt-2 font-bold group-hover:text-accent transition-colors",
+                        ),
+                      ],
+                      [html.text(cert.name)],
+                    ),
+                    html.span(
+                      [attribute.class("block pt-1 text-sm text-muted")],
+                      [html.text(cert.period)],
+                    ),
+                  ],
+                ),
+              ])
+            }),
+        ),
+      ]),
+      ui.section("volunteering", [
+        html.ul(
+          [attribute.class("space-y-6")],
+          volunteering
+            |> list.map(fn(role) {
+              html.li([], [
+                html.p(
+                  [
+                    attribute.class(
+                      "text-xs uppercase tracking-wider text-accent",
+                    ),
+                  ],
+                  [html.text(role.period)],
+                ),
+                html.h3([attribute.class("pt-2 font-bold")], [
+                  html.text(role.role),
+                  html.span([attribute.class("text-muted font-normal")], [
+                    html.text(" @ "),
+                  ]),
+                  html.span([attribute.class("text-accent")], [
+                    html.text(role.company),
+                  ]),
+                ]),
+                html.p([attribute.class("pt-1 pb-3 text-sm text-muted")], [
+                  html.text(role.location),
+                ]),
+                ui.bullets(role.highlights),
+              ])
+            }),
+        ),
+      ]),
+    ],
+  )
 }

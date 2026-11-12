@@ -1,16 +1,40 @@
 @import "tailwindcss";
 
-:root {
-    --color-bg-dark: oklch(20% 0.04 240);
-    --color-text-light: oklch(85% 0.03 240);
-    --color-cursor: oklch(75% 0.15 190);
-    --color-bg-highlight: oklch(28% 0.06 240);
-    --color-border: oklch(45% 0.08 200 / 0.5);
+@theme {
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --color-bg: oklch(18% 0.035 240);
+    --color-surface: oklch(22% 0.045 240);
+    --color-highlight: oklch(28% 0.06 240);
+    --color-fg: oklch(90% 0.02 240);
+    --color-muted: oklch(68% 0.035 240);
+    --color-accent: oklch(80% 0.13 190);
+    --color-line: oklch(45% 0.08 200 / 0.35);
 }
 
 html {
-    background-color: var(--color-bg-dark);
-    color: var(--color-text-light);
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-mono);
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    /* Faint accent glow behind the hero, fades into the flat background. */
+    background:
+        radial-gradient(
+            60rem 28rem at 50% -8rem,
+            oklch(80% 0.13 190 / 0.09),
+            transparent 70%
+        ),
+        var(--color-bg);
+    background-repeat: no-repeat;
+}
+
+::selection {
+    background-color: oklch(80% 0.13 190 / 0.3);
+    color: var(--color-fg);
 }
 
 #app {
@@ -20,24 +44,21 @@ html {
 }
 
 .colored-border {
-    border-color: var(--color-border);
+    border-color: var(--color-line);
 }
 
 .typewriter {
-    /* Core effect */
     overflow: hidden;
     white-space: nowrap;
-    border-right: 2px solid var(--color-cursor);
+    border-right: 3px solid var(--color-accent);
 
-    /* Animation setup */
-    width: 21ch; /* MUST match character count */
+    /* 21ch is the length of "Alessandro Marcantoni"; change both if the name changes. */
+    width: 21ch;
     animation:
-        typing 3s steps(21) forwards,
-        blink 1s step-end infinite,
-        boldify 3.1s forwards;
+        typing 2.4s steps(21) forwards,
+        blink 1s step-end infinite;
 }
 
-/* Typewriter typing */
 @keyframes typing {
     from {
         width: 0;
@@ -47,22 +68,43 @@ html {
     }
 }
 
-/* Cursor blink */
 @keyframes blink {
     50% {
         border-color: transparent;
     }
 }
 
-/* Make text bold at end */
-@keyframes boldify {
-    0%,
-    99% {
-        font-weight: normal;
-        background-color: transparent;
+.rise {
+    animation: rise 0.6s ease-out both;
+}
+
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
     }
-    100% {
-        font-weight: bold;
-        background-color: var(--color-bg-highlight);
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.cursor::after {
+    content: "_";
+    color: var(--color-accent);
+    animation: blink 1s step-end infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+    .rise,
+    .typewriter,
+    .cursor::after {
+        animation: none;
+    }
+    .typewriter {
+        width: auto;
     }
 }
