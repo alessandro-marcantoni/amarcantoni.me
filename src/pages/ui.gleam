@@ -1,6 +1,8 @@
+import content
 import gleam/bool
 import gleam/int
 import gleam/list
+import gleam/option.{None, Some}
 import gleam/string
 import lustre/attribute
 import lustre/element
@@ -273,12 +275,70 @@ pub fn external_arrow() -> element.Element(model.Msg) {
     html.span(
       [
         attribute.class(
-          "group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform",
+          "inline-block group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform",
         ),
         attribute.aria_hidden(True),
       ],
       [html.text("↗")],
     ),
     html.span([attribute.class("sr-only")], [html.text("(opens in a new tab)")]),
+  ])
+}
+
+/// A bordered card that links out in a new tab. The eyebrow row carries the
+/// small label and the ↗ marker; `body` is the rest of the card.
+pub fn link_card(
+  url url: String,
+  eyebrow eyebrow: String,
+  body body: List(element.Element(model.Msg)),
+) -> element.Element(model.Msg) {
+  html.a(
+    [
+      attribute.href(url),
+      attribute.target("_blank"),
+      attribute.rel("noopener"),
+      attribute.class(
+        "group flex h-full flex-col gap-1 rounded-lg border border-line p-4 hover:border-accent/60 hover:bg-highlight/40 transition-colors",
+      ),
+    ],
+    [
+      html.span(
+        [
+          attribute.class(
+            "flex justify-between text-xs uppercase tracking-wider text-muted",
+          ),
+        ],
+        [html.text(eyebrow), external_arrow()],
+      ),
+      ..body
+    ],
+  )
+}
+
+/// One job or volunteering role: period, title, optional location, then the
+/// highlights and skills.
+pub fn role_entry(role: content.Experience) -> element.Element(model.Msg) {
+  html.div([], [
+    html.p([attribute.class("text-xs uppercase tracking-wider text-accent")], [
+      html.text(role.period),
+    ]),
+    html.h3([attribute.class("pt-2 text-lg md:text-xl font-bold")], [
+      html.text(role.role),
+      html.span([attribute.class("text-muted font-normal")], [
+        html.text(" @ "),
+      ]),
+      html.span([attribute.class("text-accent")], [html.text(role.company)]),
+    ]),
+    case role.location {
+      Some(location) ->
+        html.p([attribute.class("pt-1 text-sm text-muted")], [
+          html.text(location),
+        ])
+      None -> element.none()
+    },
+    html.div([attribute.class("pt-4")], [
+      bullets(role.highlights),
+      skill_tags(role.skills),
+    ]),
   ])
 }

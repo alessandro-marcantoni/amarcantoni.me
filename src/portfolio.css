@@ -155,10 +155,10 @@ body {
     white-space: nowrap;
     border-right: 3px solid var(--color-accent);
 
-    /* 21ch is the length of "Alessandro Marcantoni"; change both if the name changes. */
-    width: 21ch;
+    /* home.gleam sets --chars to the length of the name. */
+    width: calc(var(--chars) * 1ch);
     animation:
-        typing 2.4s steps(21) forwards,
+        typing 2.4s steps(var(--chars)) forwards,
         blink 1s step-end infinite;
 }
 
@@ -167,7 +167,7 @@ body {
         width: 0;
     }
     to {
-        width: 21ch;
+        width: calc(var(--chars) * 1ch);
     }
 }
 

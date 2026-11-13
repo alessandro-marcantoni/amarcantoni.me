@@ -1,5 +1,7 @@
+import content
 import gleam/int
 import gleam/list
+import gleam/option.{None, Some}
 import gleam/string
 import lustre/attribute
 import lustre/element
@@ -12,7 +14,7 @@ pub fn render_projects(model: model.Model) -> element.Element(model.Msg) {
 }
 
 fn render_project(
-  project: model.Project,
+  project: content.Project,
   index: Int,
 ) -> element.Element(model.Msg) {
   let number = string.pad_start(int.to_string(index + 1), to: 2, with: "0")
@@ -29,8 +31,8 @@ fn render_project(
       html.div([attribute.class("flex-1")], [
         html.h2([attribute.class("text-2xl md:text-3xl font-bold")], [
           case project.url {
-            "" -> html.text(project.name)
-            url ->
+            None -> html.text(project.name)
+            Some(url) ->
               html.a(
                 [
                   attribute.href(url),
@@ -40,17 +42,8 @@ fn render_project(
                 ],
                 [
                   html.text(project.name),
-                  html.span(
-                    [
-                      attribute.class(
-                        "inline-block pl-2 text-lg text-muted group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform",
-                      ),
-                      attribute.aria_hidden(True),
-                    ],
-                    [html.text("↗")],
-                  ),
-                  html.span([attribute.class("sr-only")], [
-                    html.text(" (opens in a new tab)"),
+                  html.span([attribute.class("pl-2 text-lg text-muted")], [
+                    ui.external_arrow(),
                   ]),
                 ],
               )

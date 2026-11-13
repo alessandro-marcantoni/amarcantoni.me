@@ -1,3 +1,4 @@
+import content
 import gleam/uri.{type Uri}
 import lustre
 import lustre/effect.{type Effect}
@@ -24,7 +25,7 @@ fn init(_args) -> #(Model, Effect(Msg)) {
   }
   let theme = theme.current()
   #(
-    Model(profile: model.profile, current_page: page, theme:),
+    Model(profile: content.profile, current_page: page, theme:),
     effect.batch([modem.init(on_url_change), apply_theme(theme)]),
   )
 }
