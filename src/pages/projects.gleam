@@ -8,10 +8,7 @@ import model
 import pages/ui
 
 pub fn render_projects(model: model.Model) -> element.Element(model.Msg) {
-  ui.layout(
-    model.current_page,
-    model.profile.projects |> list.index_map(render_project),
-  )
+  ui.layout(model, model.profile.projects |> list.index_map(render_project))
 }
 
 fn render_project(

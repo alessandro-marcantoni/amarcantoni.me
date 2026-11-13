@@ -5,7 +5,9 @@ import gleam/string
 import lustre/attribute
 import lustre/element
 import lustre/element/html
+import lustre/event
 import model
+import theme
 
 /// Pages listed in the navbar. Blog stays reachable at /blog but is left out
 /// until it has a post.
@@ -24,7 +26,7 @@ pub fn get_title(page: model.Page) -> String {
 /// Page shell shared by every route. Each section gets its own framed band,
 /// and an empty band stretches to push the footer to the bottom.
 pub fn layout(
-  current_page: model.Page,
+  model: model.Model,
   sections: List(element.Element(model.Msg)),
 ) -> element.Element(model.Msg) {
   html.div([attribute.class("flex flex-col min-h-dvh")], [
@@ -45,7 +47,10 @@ pub fn layout(
                 html.text("alessandro"),
               ],
             ),
-            render_navbar(current_page),
+            html.div([attribute.class("flex items-center")], [
+              render_navbar(model.current_page),
+              render_theme_switcher(model.theme),
+            ]),
           ]),
         ]),
       ],
@@ -137,6 +142,41 @@ pub fn render_navbar(current_page: model.Page) -> element.Element(model.Msg) {
   )
 }
 
+/// A native <select> stretched invisibly over a compact label, so phones get
+/// their own picker and the header stays narrow.
+fn render_theme_switcher(current: theme.Theme) -> element.Element(model.Msg) {
+  html.label(
+    [
+      attribute.class(
+        "relative flex items-center gap-1.5 px-3 py-4 text-sm text-muted hover:text-fg focus-within:text-accent transition-colors cursor-pointer",
+      ),
+    ],
+    [
+      html.span([attribute.aria_hidden(True)], [html.text("◐")]),
+      html.span([attribute.class("hidden sm:inline")], [
+        html.text(current.label),
+      ]),
+      html.select(
+        [
+          attribute.class("absolute inset-0 opacity-0 cursor-pointer"),
+          attribute.aria_label("Color theme"),
+          event.on_change(model.ChangeTheme),
+        ],
+        theme.all
+          |> list.map(fn(option) {
+            html.option(
+              [
+                attribute.value(option.id),
+                attribute.selected(option.id == current.id),
+              ],
+              option.label,
+            )
+          }),
+      ),
+    ],
+  )
+}
+
 pub fn framed(
   bottom_border: Bool,
   elements: List(element.Element(model.Msg)),
@@ -177,7 +217,7 @@ fn tag(name: String, closing: Bool) -> List(element.Element(model.Msg)) {
   }
   [
     html.span([attribute.class("text-muted/60")], [html.text(open)]),
-    html.span([attribute.class("text-accent/80")], [html.text(name)]),
+    html.span([attribute.class("text-tag/80")], [html.text(name)]),
     html.span([attribute.class("text-muted/60")], [html.text(">")]),
   ]
 }

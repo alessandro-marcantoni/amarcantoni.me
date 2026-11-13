@@ -5,7 +5,7 @@ import model
 import pages/ui
 
 pub fn render_blog(model: model.Model) -> element.Element(model.Msg) {
-  ui.layout(model.current_page, [
+  ui.layout(model, [
     ui.section("blog", [
       html.p([attribute.class("text-sm text-muted")], [
         html.span([attribute.class("text-accent")], [html.text("$ ")]),

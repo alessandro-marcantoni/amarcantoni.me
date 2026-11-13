@@ -34,7 +34,85 @@
     --color-fg: oklch(90% 0.02 240);
     --color-muted: oklch(68% 0.035 240);
     --color-accent: oklch(80% 0.13 190);
+    /* Name color in the <section> tags, like tag names in an editor. */
+    --color-tag: oklch(80% 0.13 190);
     --color-line: oklch(45% 0.08 200 / 0.35);
+}
+
+/* IDE themes. ui.gleam sets data-theme on <html>, and the ids must match
+   theme.gleam. Muted is lighter than each theme's comment color where the
+   original fails WCAG AA contrast for small text. */
+:root {
+    color-scheme: dark;
+}
+
+:root[data-theme="one-dark"] {
+    --color-bg: #282c34;
+    --color-surface: #21252b;
+    --color-highlight: #2c313a;
+    --color-fg: #abb2bf;
+    --color-muted: #969ca8;
+    --color-accent: #61afef;
+    --color-tag: #e06c75;
+    --color-line: #3e4451;
+}
+
+:root[data-theme="dracula"] {
+    --color-bg: #282a36;
+    --color-surface: #21222c;
+    --color-highlight: #44475a;
+    --color-fg: #f8f8f2;
+    --color-muted: #9ea8d6;
+    --color-accent: #bd93f9;
+    --color-tag: #ff79c6;
+    --color-line: #44475a;
+}
+
+:root[data-theme="monokai"] {
+    --color-bg: #272822;
+    --color-surface: #1e1f1c;
+    --color-highlight: #3e3d32;
+    --color-fg: #f8f8f2;
+    --color-muted: #a59f85;
+    --color-accent: #a6e22e;
+    --color-tag: #f92672;
+    --color-line: #49483e;
+}
+
+:root[data-theme="nord"] {
+    --color-bg: #2e3440;
+    --color-surface: #3b4252;
+    --color-highlight: #434c5e;
+    --color-fg: #eceff4;
+    --color-muted: #a2abbc;
+    --color-accent: #88c0d0;
+    --color-tag: #81a1c1;
+    --color-line: #4c566a;
+}
+
+:root[data-theme="github-light"] {
+    color-scheme: light;
+    --color-bg: #ffffff;
+    --color-surface: #f6f8fa;
+    --color-highlight: #eaeef2;
+    --color-fg: #1f2328;
+    --color-muted: #59636e;
+    --color-accent: #0969da;
+    --color-tag: #116329;
+    --color-line: #d1d9e0;
+}
+
+:root[data-theme="solarized-light"] {
+    color-scheme: light;
+    --color-bg: #fdf6e3;
+    --color-surface: #eee8d5;
+    --color-highlight: #eee8d5;
+    --color-fg: #073642;
+    --color-muted: #586e75;
+    /* Solarized blue #268bd2 is 3.4:1 on base3, darkened to pass AA. */
+    --color-accent: #1d6fae;
+    --color-tag: #cb4b16;
+    --color-line: #e3dcc6;
 }
 
 html {
@@ -50,7 +128,7 @@ body {
     background:
         radial-gradient(
             60rem 28rem at 50% -8rem,
-            oklch(80% 0.13 190 / 0.09),
+            color-mix(in oklab, var(--color-accent) 9%, transparent),
             transparent 70%
         ),
         var(--color-bg);
@@ -58,7 +136,7 @@ body {
 }
 
 ::selection {
-    background-color: oklch(80% 0.13 190 / 0.3);
+    background-color: color-mix(in oklab, var(--color-accent) 30%, transparent);
     color: var(--color-fg);
 }
 

@@ -7,7 +7,7 @@ import pages/ui
 
 pub fn render_home(model: model.Model) -> element.Element(model.Msg) {
   let profile = model.profile
-  ui.layout(model.current_page, [
+  ui.layout(model, [
     render_hero(profile),
     render_stats(profile.stats),
     ui.section("about", [

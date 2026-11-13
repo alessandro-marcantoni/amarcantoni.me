@@ -1,9 +1,13 @@
+import theme.{type Theme}
+
 pub type Model {
-  Model(profile: Profile, current_page: Page)
+  Model(profile: Profile, current_page: Page, theme: Theme)
 }
 
 pub type Msg {
   GoToPage(Page)
+  /// Carries the theme id from the switcher's <select>.
+  ChangeTheme(String)
 }
 
 pub type Page {
